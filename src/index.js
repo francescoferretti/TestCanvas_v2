@@ -1,13 +1,26 @@
 var keys;
+var spriteConfig = {
+    imgPath : "sprite/sprite.png",
+    frameX: 0,
+    frameY: 0,
+    frameW : 400,
+    frameH : 600,
+    facing : "d", //d sx dx u
+    initalFrame : { //TODO
+        d:0,
+        u:4,
+        dx:12,
+        sx:8
+    }
+};
 var x=250;
 var y = 250;
 var img = new Image();
-img.src ="sprite/sprite.png";
-var frameX= 0;
-var frameY= 0;
-var frameW = 400;
-var frameH = 600;
-var frames = [{x:0, y:0},{x:1, y:0},{x:2, y:0},{x:3, y:0},
+img.src =spriteConfig.imgPath;
+
+
+var frames = [
+    {x:0, y:0},{x:1, y:0},{x:2, y:0},{x:3, y:0},
     {x:0, y:1},{x:1, y:1},{x:2, y:1},{x:3, y:1},
     {x:0, y:2},{x:1, y:2},{x:2, y:2},{x:3, y:2},
     {x:0, y:3},{x:1, y:3},{x:2, y:3},{x:3, y:3}];
@@ -29,16 +42,6 @@ window.addEventListener('keyup', function (e) {
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
-ctx.fillStyle = "red";
-ctx.fillRect(0,0,100,100);
-
-var angolo = 0;
-
-
-
-ctx.fillRect(20,500,30,30);
-
-
 function spinMeAround()
 {
     //ctx.clearRect(390,390,250,250);
@@ -46,19 +49,10 @@ function spinMeAround()
     moveThis();
     ctx.save();
     //ctx.translate(x, y);
-    ctx.drawImage(img,frameW*frameX,frameH*frameY,frameW,frameH,x,y,frameW/2,frameH/2);
-    //ctx.rotate(angolo);
-    //ctx.fillStyle="gold";
-    //ctx.fillRect(-100,-10,200,20);
+    ctx.drawImage(img,spriteConfig.frameW*spriteConfig.frameX,spriteConfig.frameH*spriteConfig.frameY,spriteConfig.frameW,spriteConfig.frameH,x,y,spriteConfig.frameW/2,spriteConfig.frameH/2);
+
     ctx.restore();
-    //if(angolo < 6.28319)
-    //{
-    //angolo = angolo+0.1;
-    //}
-    //else
-    //{
-    //    angolo = 0;
-    //}
+
 }
 
 function printBackgound()
@@ -77,42 +71,46 @@ function moveThis()
     }
     if(keys && !keys[37]&& !keys[39]&& !keys[38]&& !keys[40])
     {
-        frameX = 0;
-        if(frameY == 3)
+        spriteConfig.frameX = 0;
+        if(spriteConfig.frameY == 3)
         {
-            frameX=1;
+            spriteConfig.frameX=1;
         }
     }
 
     if (keys && keys[37]) {
-        if(frameY != frames[8].y)
+        spriteConfig.facing = "sx";
+        if(spriteConfig.frameY != frames[8].y)
         {
-            frameX = frames[8].x;
-            frameY = frames[8].y; 
+            spriteConfig.frameX = frames[8].x;
+            spriteConfig.frameY = frames[8].y; 
         }
         x=x-2;
     } //sinistra
     if (keys && keys[39]) {
-        if(frameY != frames[12].y)
+        spriteConfig.facing = "dx";
+        if(spriteConfig.frameY != frames[12].y)
         {
-            frameX = frames[12].x;
-            frameY = frames[12].y; 
+            spriteConfig.frameX = frames[12].x;
+            spriteConfig.frameY = frames[12].y; 
         }
         x=x+2;
     } //destra
     if (keys && keys[38]) {
-        if(frameY != frames[4].y)
+        spriteConfig.facing ="u";
+        if(spriteConfig.frameY != frames[4].y)
         {
-            frameX = frames[4].x;
-            frameY = frames[4].y; 
+            spriteConfig.frameX = frames[4].x;
+            spriteConfig.frameY = frames[4].y; 
         }
         y=y-2;
     } //su
     if (keys && keys[40]) {
-        if(frameY != frames[0].y)
+        spriteConfig.facing = "d";
+        if(spriteConfig.frameY != frames[0].y)
         {
-            frameX = frames[0].x;
-            frameY = frames[0].y; 
+            spriteConfig.frameX = frames[0].x;
+            spriteConfig.frameY = frames[0].y; 
         }
         y=y+2;
     } //giu
@@ -129,37 +127,33 @@ function drawMe()
     }
     if(keys)
     {
-        frameX = frameX+1;
+        spriteConfig.frameX = spriteConfig.frameX+1;
+        switch(spriteConfig.facing)
+        {
+            case "u":
+                if(spriteConfig.frameX > 3)
+                {
+                    spriteConfig.frameX = frames[4].x;
+                    spriteConfig.frameY = frames[4].y; 
+                };
+            case "d":
+                if(spriteConfig.frameX > 3)
+                {
+                    spriteConfig.frameX = frames[0].x;
+                    spriteConfig.frameY = frames[0].y; 
+                };
+            case "dx":
+                if(spriteConfig.frameX > 3)
+                {
+                    spriteConfig.frameX = frames[12].x;
+                    spriteConfig.frameY = frames[12].y; 
+                };
+            case "sx":
+                if(spriteConfig.frameX > 3)
+                {
+                    spriteConfig.frameX = frames[8].x;
+                    spriteConfig.frameY = frames[8].y; 
+                };
+        };
     }
-    if (keys && keys[40]) {
-            if(frameX > 3)
-            {
-                frameX = frames[0].x;
-                frameY = frames[0].y; 
-            }
-        
-    } //giu
-    if (keys && keys[38]) {
-            if(frameX > 3)
-            {
-                frameX = frames[4].x;
-                frameY = frames[4].y; 
-            }
-    } //su
-    if (keys && keys[37]) {
-        if(frameX > 3)
-        {
-            frameX = frames[8].x;
-            frameY = frames[8].y; 
-        }
-
-    } //sinistra
-    if (keys && keys[39]) {
-        if(frameX > 3)
-        {
-            frameX = frames[12].x;
-            frameY = frames[12].y; 
-        }
-    } //destra*/
-
 }
