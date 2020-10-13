@@ -11,12 +11,22 @@ var spriteConfig = {
         u:4,
         dx:12,
         sx:8
-    }
+    },
+    posX : 250,
+    posY : 250,
+    maxHp : 500,
+    hpLeft: 500
 };
-var x=250;
-var y = 250;
+
+var hpBar = {
+    hpW: 200,
+    hpH: 20
+};
+
 var img = new Image();
 img.src =spriteConfig.imgPath;
+
+var imgHpBar = new Image();
 
 
 var frames = [
@@ -48,11 +58,41 @@ function spinMeAround()
     printBackgound();
     moveThis();
     ctx.save();
-    //ctx.translate(x, y);
-    ctx.drawImage(img,spriteConfig.frameW*spriteConfig.frameX,spriteConfig.frameH*spriteConfig.frameY,spriteConfig.frameW,spriteConfig.frameH,x,y,spriteConfig.frameW/2,spriteConfig.frameH/2);
-
+    ctx.translate(spriteConfig.posX, spriteConfig.posY);
+    ctx.drawImage(img,spriteConfig.frameW*spriteConfig.frameX,spriteConfig.frameH*spriteConfig.frameY,spriteConfig.frameW,spriteConfig.frameH,spriteConfig.posX-spriteConfig.frameW/2,spriteConfig.posY-spriteConfig.frameH/2,spriteConfig.frameW/2,spriteConfig.frameH/2);
+    
     ctx.restore();
+    drawHpBar();
+    attack();
 
+}
+
+function attack()
+{
+    if(!keys || !keys[90]) //Z to attack
+    {
+        return;
+    }
+    if(keys && keys[90]) //Z to attack
+    {
+        if(spriteConfig.hpLeft  != 0)
+        spriteConfig.hpLeft = spriteConfig.hpLeft-10;
+    }
+}
+
+function drawHpBar()
+{
+
+    ctx.save();
+    ctx.fillStyle="red";
+    ctx.translate(spriteConfig.posX, spriteConfig.posY);
+    ctx.fillRect(spriteConfig.posX-spriteConfig.frameW/2,spriteConfig.posY-spriteConfig.frameH/2,hpBar.hpW,hpBar.hpH);
+    ctx.restore();
+    ctx.save();
+    ctx.fillStyle="green";
+    ctx.translate(spriteConfig.posX, spriteConfig.posY);
+    ctx.fillRect(spriteConfig.posX-spriteConfig.frameW/2,spriteConfig.posY-spriteConfig.frameH/2,(hpBar.hpW*(spriteConfig.hpLeft / spriteConfig.maxHp)),hpBar.hpH);
+    ctx.restore();
 }
 
 function printBackgound()
@@ -85,7 +125,7 @@ function moveThis()
             spriteConfig.frameX = frames[8].x;
             spriteConfig.frameY = frames[8].y; 
         }
-        x=x-2;
+        spriteConfig.posX=spriteConfig.posX-2;
     } //sinistra
     if (keys && keys[39]) {
         spriteConfig.facing = "dx";
@@ -94,7 +134,7 @@ function moveThis()
             spriteConfig.frameX = frames[12].x;
             spriteConfig.frameY = frames[12].y; 
         }
-        x=x+2;
+        spriteConfig.posX=spriteConfig.posX+2;
     } //destra
     if (keys && keys[38]) {
         spriteConfig.facing ="u";
@@ -103,7 +143,7 @@ function moveThis()
             spriteConfig.frameX = frames[4].x;
             spriteConfig.frameY = frames[4].y; 
         }
-        y=y-2;
+        spriteConfig.posY=spriteConfig.posY-2;
     } //su
     if (keys && keys[40]) {
         spriteConfig.facing = "d";
@@ -112,7 +152,7 @@ function moveThis()
             spriteConfig.frameX = frames[0].x;
             spriteConfig.frameY = frames[0].y; 
         }
-        y=y+2;
+        spriteConfig.posY=spriteConfig.posY+2;
     } //giu
 
     
